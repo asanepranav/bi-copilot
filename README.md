@@ -2,7 +2,7 @@
 
 AI-powered business intelligence assistant that lets you talk to your database in plain English. Built on a LangGraph multi-agent pipeline — ask a question, get SQL, a chart, and an AI-written insight, all in one flow.
 
-**Live demo:** _add your Streamlit Cloud URL here once deployed_
+**Live demo:https://bi-copilot-esbtlsmspvuvmjhqr4fxtb.streamlit.app/**
 
 ![BI Copilot demo](demo.png)
 
