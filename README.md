@@ -4,6 +4,8 @@ AI-powered business intelligence assistant that lets you talk to your database i
 
 **Live demo:** _add your Streamlit Cloud URL here once deployed_
 
+![BI Copilot demo](demo.png)
+
 ---
 
 ## What it does
