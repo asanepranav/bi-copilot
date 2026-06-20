@@ -1,3 +1,5 @@
+from huggingface_hub import InferenceClient
+
 import os, re
 from typing import TypedDict, Annotated
 from dotenv import load_dotenv
@@ -24,6 +26,25 @@ def call_llm(prompt: str, max_tokens: int = 1024) -> str:
         max_tokens=max_tokens,
     )
     return resp.choices[0].message.content.strip()
+
+HF_MODEL = "asanepranav/tinyllama-text2sql"  # your HF model
+hf_client = InferenceClient(token=os.getenv("HF_TOKEN"))
+
+def call_tinyllama(prompt: str) -> str:
+    """Use your fine-tuned TinyLlama for SQL generation."""
+    try:
+        response = hf_client.text_generation(
+            prompt,
+            model=HF_MODEL,
+            max_new_tokens=256,
+            temperature=0.1,
+            stop_sequences=["--", "\n\n"],
+        )
+        return clean_sql(response)
+    except Exception as e:
+        # fallback to Groq if TinyLlama fails
+        print(f"TinyLlama failed: {e}, falling back to Groq")
+        return call_llm(prompt)
 
 def clean_sql(raw: str) -> str:
     """Strip markdown, backticks, leading/trailing whitespace."""
@@ -58,12 +79,11 @@ class AnalystState(TypedDict):
 def sql_agent(state: AnalystState) -> AnalystState:
     schema   = state.get("schema") or get_schema()
     prompt   = SQL_AGENT_PROMPT.format(schema=schema, question=state["question"])
-    raw      = call_llm(prompt)
+    raw      = call_tinyllama(prompt)   # ← your fine-tune
     state["raw_sql"] = clean_sql(raw)
     state["schema"]  = schema
     state["error"]   = ""
     return state
-
 
 # ── Node 2: Validator → check + fix SQL ──────────────────────
 def validator_agent(state: AnalystState) -> AnalystState:

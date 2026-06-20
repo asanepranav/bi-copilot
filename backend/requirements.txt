@@ -1,11 +1,10 @@
-fastapi
-uvicorn
-langgraph
-langchain-core
-groq==0.9.0
+streamlit
+plotly
+pandas
+groq
 httpx==0.27.0
 sqlalchemy
 psycopg[binary]
 python-dotenv
-pydantic
-huggingface_hub
+langgraph
+langchain-core
